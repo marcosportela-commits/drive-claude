@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scale Program — V4 Company</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Reset & Base ────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #ffffff;
+      color: #0A0A0A;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ─── CSS Variables ───────────────────────────────────────────── */
+    :root {
+      --red: #E5232A;
+      --red-dark: #c41e24;
+      --black: #0A0A0A;
+      --white: #ffffff;
+      --gray-50: #F5F5F7;
+      --gray-100: #EBEBED;
+      --gray-300: #C7C7CC;
+      --gray-500: #8E8E93;
+      --gray-700: #3A3A3C;
+      --container: 1200px;
+      --pad-x: 24px;
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 22px;
+    }
+
+    /* ─── Container ───────────────────────────────────────────────── */
+    .container {
+      width: 100%;
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 0 var(--pad-x);
+    }
+
+    /* ─── NAV ─────────────────────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 20px 0;
+      transition: padding 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+    }
+    .nav.scrolled {
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.08);
+      padding: 14px 0;
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 24px;
+      color: var(--red);
+      text-decoration: none;
+      letter-spacing: -0.5px;
+      flex-shrink: 0;
+    }
+    .nav-links {
+      display: none;
+      list-style: none;
+      gap: 32px;
+    }
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-700);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--black); }
+    .nav-cta {
+      flex-shrink: 0;
+      background: var(--red);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 10px 22px;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+      white-space: nowrap;
+    }
+    .nav-cta:hover { background: var(--red-dark); transform: translateY(-1px); }
+    .nav-hamburger {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .nav-hamburger span {
+      display: block;
+      width: 22px; height: 2px;
+      background: var(--black);
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+
+    /* ─── HERO ────────────────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 0 80px;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 40%, #f0f0f4 0%, #ffffff 70%);
+    }
+    /* Decorative blobs */
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .blob-1 {
+      width: 500px; height: 400px;
+      background: #e8e8ef;
+      top: -100px; right: -150px;
+    }
+    .blob-2 {
+      width: 400px; height: 350px;
+      background: #f0e8e8;
+      bottom: -50px; left: -100px;
+      opacity: 0.35;
+    }
+    .blob-3 {
+      width: 300px; height: 300px;
+      background: #efefef;
+      top: 30%; left: 5%;
+      opacity: 0.4;
+    }
+    /* Geometric grid overlay */
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 100%);
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 var(--pad-x);
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(229,35,42,0.08);
+      border: 1px solid rgba(229,35,42,0.2);
+      color: var(--red);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 16px;
+      border-radius: 100px;
+      margin-bottom: 32px;
+      letter-spacing: 0.02em;
+    }
+    .hero-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--red);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.3); }
+    }
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(40px, 8vw, 80px);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      color: var(--black);
+      margin-bottom: 24px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--red);
+    }
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 19px);
+      font-weight: 400;
+      color: var(--gray-500);
+      line-height: 1.65;
+      max-width: 560px;
+      margin: 0 auto 40px;
+    }
+    .hero-ctas {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 56px;
+    }
+    .btn-primary {
+      background: var(--red);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      padding: 15px 32px;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      display: inline-block;
+    }
+    .btn-primary:hover {
+      background: var(--red-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(229,35,42,0.25);
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--gray-700);
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 15px;
+      padding: 15px 28px;
+      border: 1.5px solid var(--gray-100);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s, transform 0.15s;
+      display: inline-block;
+    }
+    .btn-ghost:hover {
+      border-color: var(--gray-300);
+      color: var(--black);
+      transform: translateY(-1px);
+    }
+    .hero-pills {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.85);
+      border: 1px solid var(--gray-100);
+      border-radius: 100px;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-700);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .pill-icon {
+      width: 18px; height: 18px;
+      flex-shrink: 0;
+    }
+    /* Floating abstract shapes */
+    .shape {
+      position: absolute;
+      pointer-events: none;
+    }
+    .shape-ring {
+      width: 120px; height: 120px;
+      border: 2px solid rgba(0,0,0,0.06);
+      border-radius: 50%;
+      top: 20%; right: 8%;
+      animation: float 6s ease-in-out infinite;
+    }
+    .shape-ring-sm {
+      width: 60px; height: 60px;
+      border: 1.5px solid rgba(229,35,42,0.12);
+      border-radius: 50%;
+      top: 65%; left: 6%;
+      animation: float 8s ease-in-out infinite reverse;
+    }
+    .shape-dot-grid {
+      top: 15%; left: 7%;
+      opacity: 0.3;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-12px) rotate(5deg); }
+    }
+
+    /* ─── TICKER ──────────────────────────────────────────────────── */
+    .ticker {
+      background: var(--black);
+      padding: 18px 0;
+      overflow: hidden;
+      position: relative;
+    }
+    .ticker::before, .ticker::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 80px;
+      z-index: 2;
+    }
+    .ticker::before { left: 0; background: linear-gradient(90deg, var(--black), transparent); }
+    .ticker::after { right: 0; background: linear-gradient(-90deg, var(--black), transparent); }
+    .ticker-track {
+      display: flex;
+      gap: 48px;
+      animation: ticker-scroll 30s linear infinite;
+      width: max-content;
+    }
+    .ticker-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      white-space: nowrap;
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.75);
+    }
+    .ticker-item span { color: #fff; font-weight: 600; }
+    .ticker-sep {
+      width: 4px; height: 4px;
+      background: var(--red);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    @keyframes ticker-scroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* ─── SECTIONS COMMON ─────────────────────────────────────────── */
+    section { padding: 96px 0; }
+    .section-label {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(28px, 4vw, 48px);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--black);
+      margin-bottom: 16px;
+    }
+    .section-sub {
+      font-size: 17px;
+      color: var(--gray-500);
+      line-height: 1.6;
+      max-width: 520px;
+    }
+    .section-header { margin-bottom: 56px; }
+    .section-header.center {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .section-header.center .section-sub { margin: 0 auto; }
+
+    /* ─── PROCESS STEPS ───────────────────────────────────────────── */
+    .steps { background: var(--gray-50); }
+    .steps-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    .step-card {
+      background: #fff;
+      border-radius: var(--radius-lg);
+      padding: 36px 32px;
+      border: 1.5px solid var(--gray-100);
+      transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .step-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--red);
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.3s ease;
+    }
+    .step-card:hover::before { transform: scaleY(1); }
+    .step-card:hover {
+      border-color: rgba(229,35,42,0.2);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+      transform: translateY(-3px);
+    }
+    .step-num {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 0.05em;
+      color: var(--gray-300);
+      margin-bottom: 20px;
+    }
+    .step-icon {
+      width: 48px; height: 48px;
+      background: var(--gray-50);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .step-icon svg { color: var(--red); }
+    .step-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--black);
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+    .step-desc {
+      font-size: 15px;
+      color: var(--gray-500);
+      line-height: 1.6;
+    }
+
+    /* ─── DELIVERABLES GRID ───────────────────────────────────────── */
+    .delivers { background: #fff; }
+    .delivers-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .deliver-card {
+      background: var(--gray-50);
+      border-radius: var(--radius-md);
+      padding: 28px 24px;
+      border: 1px solid var(--gray-100);
+      transition: box-shadow 0.25s, transform 0.25s, border-color 0.25s;
+    }
+    .deliver-card:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.07);
+      transform: translateY(-2px);
+      border-color: var(--gray-300);
+    }
+    .deliver-icon {
+      width: 40px; height: 40px;
+      background: #fff;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .deliver-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--black);
+      margin-bottom: 6px;
+    }
+    .deliver-desc {
+      font-size: 13px;
+      color: var(--gray-500);
+      line-height: 1.55;
+    }
+
+    /* ─── COMPARISON ──────────────────────────────────────────────── */
+    .comparison { background: var(--black); }
+    .comparison .section-title { color: #fff; }
+    .comparison .section-sub { color: rgba(255,255,255,0.5); }
+    .comparison .section-label { color: var(--red); }
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    .compare-col {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .compare-col-header {
+      padding: 20px 28px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+    }
+    .compare-col.bad .compare-col-header {
+      background: rgba(255,255,255,0.05);
+      color: rgba(255,255,255,0.4);
+    }
+    .compare-col.good .compare-col-header {
+      background: var(--red);
+      color: #fff;
+    }
+    .compare-col-body { background: rgba(255,255,255,0.04); }
+    .compare-col.good .compare-col-body { background: rgba(229,35,42,0.06); border: 1px solid rgba(229,35,42,0.2); border-top: none; }
+    .compare-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 28px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-size: 15px;
+      color: rgba(255,255,255,0.55);
+    }
+    .compare-col.good .compare-row { color: rgba(255,255,255,0.85); }
+    .compare-row:last-child { border-bottom: none; }
+    .cmp-icon { flex-shrink: 0; font-size: 16px; }
+
+    /* ─── RESULTS ─────────────────────────────────────────────────── */
+    .results { background: #fff; }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .stat-card {
+      background: var(--gray-50);
+      border-radius: var(--radius-lg);
+      padding: 36px 28px;
+      border: 1px solid var(--gray-100);
+    }
+    .stat-value {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(32px, 5vw, 52px);
+      letter-spacing: -0.03em;
+      color: var(--black);
+      margin-bottom: 6px;
+    }
+    .stat-value em {
+      font-style: normal;
+      color: var(--red);
+    }
+    .stat-label {
+      font-size: 14px;
+      color: var(--gray-500);
+      font-weight: 500;
+    }
+    .testimonial-card {
+      background: var(--black);
+      border-radius: var(--radius-lg);
+      padding: 40px 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .testimonial-quote {
+      font-size: clamp(17px, 2.5vw, 22px);
+      font-weight: 400;
+      color: rgba(255,255,255,0.9);
+      line-height: 1.55;
+      font-style: italic;
+    }
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .testimonial-avatar {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #E5232A, #8B1417);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .testimonial-name {
+      font-weight: 600;
+      font-size: 15px;
+      color: #fff;
+    }
+    .testimonial-role {
+      font-size: 13px;
+      color: rgba(255,255,255,0.45);
+    }
+
+    /* ─── FAQ ─────────────────────────────────────────────────────── */
+    .faq { background: var(--gray-50); }
+    .faq-list { max-width: 720px; margin: 0 auto; }
+    .faq-item {
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .faq-item:first-child { border-top: 1px solid var(--gray-100); }
+    .faq-q {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 22px 0;
+      cursor: pointer;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--black);
+      transition: color 0.2s;
+      list-style: none;
+      user-select: none;
+    }
+    .faq-q::-webkit-details-marker { display: none; }
+    .faq-item.open .faq-q { color: var(--red); }
+    .faq-chevron {
+      flex-shrink: 0;
+      width: 28px; height: 28px;
+      border: 1.5px solid var(--gray-100);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s, border-color 0.2s;
+    }
+    .faq-item.open .faq-chevron {
+      transform: rotate(180deg);
+      border-color: var(--red);
+    }
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease, padding 0.25s ease;
+      font-size: 15px;
+      color: var(--gray-500);
+      line-height: 1.7;
+    }
+    .faq-a-inner { padding-bottom: 22px; }
+
+    /* ─── FINAL CTA ───────────────────────────────────────────────── */
+    .final-cta {
+      background: var(--black);
+      padding: 100px 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .final-cta::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px; height: 400px;
+      background: radial-gradient(ellipse at center, rgba(229,35,42,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .final-cta .section-title { color: #fff; }
+    .final-cta .section-sub { color: rgba(255,255,255,0.5); }
+    .final-cta .section-label { color: var(--red); }
+    .cta-form {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      max-width: 520px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .form-row {
+      margin-bottom: 14px;
+    }
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .form-input {
+      width: 100%;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius-sm);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      padding: 14px 16px;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .form-input::placeholder { color: rgba(255,255,255,0.25); }
+    .form-input:focus {
+      border-color: rgba(229,35,42,0.5);
+      background: rgba(255,255,255,0.09);
+    }
+    .form-submit {
+      width: 100%;
+      background: var(--red);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 16px;
+      padding: 16px;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    }
+    .form-submit:hover {
+      background: var(--red-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(229,35,42,0.3);
+    }
+    .form-privacy {
+      font-size: 12px;
+      color: rgba(255,255,255,0.25);
+      text-align: center;
+      margin-top: 14px;
+    }
+
+    /* ─── FOOTER ──────────────────────────────────────────────────── */
+    .footer {
+      background: #060606;
+      padding: 48px 0;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .footer-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      text-align: center;
+    }
+    .footer-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 22px;
+      color: var(--red);
+    }
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .footer-links a {
+      font-size: 14px;
+      color: rgba(255,255,255,0.35);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: rgba(255,255,255,0.7); }
+    .footer-social {
+      display: flex;
+      gap: 16px;
+    }
+    .social-btn {
+      width: 38px; height: 38px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+    }
+    .social-btn:hover { background: rgba(255,255,255,0.12); }
+    .footer-copy {
+      font-size: 13px;
+      color: rgba(255,255,255,0.2);
+    }
+
+    /* ─── DESKTOP BREAKPOINTS ─────────────────────────────────────── */
+    @media (min-width: 768px) {
+      :root { --pad-x: 48px; }
+      .steps-grid { grid-template-columns: repeat(3, 1fr); }
+      .delivers-grid { grid-template-columns: repeat(3, 1fr); }
+      .compare-grid { grid-template-columns: 1fr 1fr; }
+      .nav-links { display: flex; }
+      .nav-hamburger { display: none; }
+      .footer-inner { flex-direction: row; justify-content: space-between; text-align: left; }
+    }
+    @media (min-width: 1024px) {
+      :root { --pad-x: 80px; }
+      .testimonial-card { flex-direction: row; align-items: center; }
+    }
+    @media (max-width: 480px) {
+      .stats-grid { grid-template-columns: 1fr; }
+      .hero-ctas { flex-direction: column; align-items: center; }
+      .btn-primary, .btn-ghost { width: 100%; text-align: center; }
+    }
+
+    /* ─── ANIMATIONS ──────────────────────────────────────────────── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .fade-up:nth-child(2) { transition-delay: 0.1s; }
+    .fade-up:nth-child(3) { transition-delay: 0.2s; }
+    .fade-up:nth-child(4) { transition-delay: 0.3s; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════ NAV -->
+<nav class="nav" id="nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a class="nav-logo" href="#">V4</a>
+      <ul class="nav-links">
+        <li><a href="#processo">Como funciona</a></li>
+        <li><a href="#entregaveis">O que você recebe</a></li>
+        <li><a href="#resultados">Resultados</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+      <a class="nav-cta" href="#inscricao">Quero entrar →</a>
+      <div class="nav-hamburger" id="hamburger">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════ HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <!-- Decorative floating shapes -->
+  <div class="shape shape-ring"></div>
+  <div class="shape shape-ring-sm"></div>
+  <div class="shape shape-dot-grid">
+    <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+      <circle cx="8" cy="8" r="2" fill="rgba(0,0,0,0.12)"/>
+      <circle cx="24" cy="8" r="2" fill="rgba(0,0,0,0.12)"/>
+      <circle cx="40" cy="8" r="2" fill="rgba(0,0,0,0.12)"/>
+      <circle cx="56" cy="8" r="2" fill="rgba(0,0,0,0.12)"/>
+      <circle cx="72" cy="8" r="2" fill="rgba(0,0,0,0.12)"/>
+      <circle cx="8" cy="24" r="2" fill="rgba(0,0,0,0.12)"/>
+      <circle cx="24" cy="24" r="2" fill="rgba(0,0,0,0.12)"/>
+      <circle cx="40" cy="24" r="2" fill="rgba(0,0,0,0.12)"/>
+      <circle cx="56" cy="24" r="2" fill="rgba(0,0,0,0.12)"/>
+      <circle cx="72" cy="24" r="2" fill="rgba(0,0,0,0.12)"/>
+      <circle cx="8" cy="40" r="2" fill="rgba(0,0,0,0.12)"/>
+      <circle cx="24" cy="40" r="2" fill="rgba(0,0,0,0.12)"/>
+      <circle cx="40" cy="40" r="2" fill="rgba(0,0,0,0.12)"/>
+      <circle cx="56" cy="40" r="2" fill="rgba(0,0,0,0.12)"/>
+      <circle cx="72" cy="40" r="2" fill="rgba(0,0,0,0.12)"/>
+      <circle cx="8" cy="56" r="2" fill="rgba(0,0,0,0.12)"/>
+      <circle cx="24" cy="56" r="2" fill="rgba(0,0,0,0.12)"/>
+      <circle cx="40" cy="56" r="2" fill="rgba(0,0,0,0.12)"/>
+      <circle cx="56" cy="56" r="2" fill="rgba(0,0,0,0.12)"/>
+      <circle cx="72" cy="56" r="2" fill="rgba(0,0,0,0.12)"/>
+      <circle cx="8" cy="72" r="2" fill="rgba(0,0,0,0.12)"/>
+      <circle cx="24" cy="72" r="2" fill="rgba(0,0,0,0.12)"/>
+      <circle cx="40" cy="72" r="2" fill="rgba(0,0,0,0.12)"/>
+      <circle cx="56" cy="72" r="2" fill="rgba(0,0,0,0.12)"/>
+      <circle cx="72" cy="72" r="2" fill="rgba(0,0,0,0.12)"/>
+    </svg>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-badge">Programa de Franquia #1 do Brasil</div>
+    <h1>Escale seu negócio de marketing <em>com a V4</em></h1>
+    <p class="hero-sub">Acesse a metodologia, a tecnologia e o suporte que já geraram +R$2,4 bilhões em receita para nossos clientes.</p>
+    <div class="hero-ctas">
+      <a class="btn-primary" href="#inscricao">Quero Entrar no Scale Program</a>
+      <a class="btn-ghost" href="#processo">Saiba mais ↓</a>
+    </div>
+    <div class="hero-pills">
+      <div class="pill">
+        <svg class="pill-icon" viewBox="0 0 18 18" fill="none">
+          <circle cx="9" cy="9" r="8" stroke="#E5232A" stroke-width="1.5"/>
+          <path d="M6 9l2 2 4-4" stroke="#E5232A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        847 Franqueados Ativos
+      </div>
+      <div class="pill">
+        <svg class="pill-icon" viewBox="0 0 18 18" fill="none">
+          <path d="M3 13l4-4 3 3 5-6" stroke="#E5232A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        R$2.4Bi Gerados
+      </div>
+      <div class="pill">
+        <svg class="pill-icon" viewBox="0 0 18 18" fill="none">
+          <path d="M9 2l1.8 3.6L15 6.3l-3 2.9.7 4.1L9 11.3l-3.7 1.9.7-4.1L3 6.3l4.2-.7L9 2z" stroke="#E5232A" stroke-width="1.5" stroke-linejoin="round"/>
+        </svg>
+        NPS 9.2
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <!-- First copy -->
+    <div class="ticker-item"><span>📈 Lucas M.</span> — R$127.000/mês</div>
+    <div class="ticker-sep"></div>
+    <div class="ticker-item"><span>🚀 Carla S.</span> — R$89.000/mês</div>
+    <div class="ticker-sep"></div>
+    <div class="ticker-item"><span>💰 Pedro A.</span> — R$203.000/mês</div>
+    <div class="ticker-sep"></div>
+    <div class="ticker-item"><span>📊 Marina T.</span> — R$156.000/mês</div>
+    <div class="ticker-sep"></div>
+    <div class="ticker-item"><span>🏆 Rafael B.</span> — R$98.000/mês</div>
+    <div class="ticker-sep"></div>
+    <div class="ticker-item"><span>💎 Ana L.</span> — R$175.000/mês</div>
+    <div class="ticker-sep"></div>
+    <div class="ticker-item"><span>🔥 Gustavo F.</span> — R$134.000/mês</div>
+    <div class="ticker-sep"></div>
+    <div class="ticker-item"><span>⚡ Júlia C.</span> — R$211.000/mês</div>
+    <div class="ticker-sep"></div>
+    <!-- Duplicate for seamless loop -->
+    <div class="ticker-item"><span>📈 Lucas M.</span> — R$127.000/mês</div>
+    <div class="ticker-sep"></div>
+    <div class="ticker-item"><span>🚀 Carla S.</span> — R$89.000/mês</div>
+    <div class="ticker-sep"></div>
+    <div class="ticker-item"><span>💰 Pedro A.</span> — R$203.000/mês</div>
+    <div class="ticker-sep"></div>
+    <div class="ticker-item"><span>📊 Marina T.</span> — R$156.000/mês</div>
+    <div class="ticker-sep"></div>
+    <div class="ticker-item"><span>🏆 Rafael B.</span> — R$98.000/mês</div>
+    <div class="ticker-sep"></div>
+    <div class="ticker-item"><span>💎 Ana L.</span> — R$175.000/mês</div>
+    <div class="ticker-sep"></div>
+    <div class="ticker-item"><span>🔥 Gustavo F.</span> — R$134.000/mês</div>
+    <div class="ticker-sep"></div>
+    <div class="ticker-item"><span>⚡ Júlia C.</span> — R$211.000/mês</div>
+    <div class="ticker-sep"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ PROCESS STEPS -->
+<section class="steps" id="processo">
+  <div class="container">
+    <div class="section-header center">
+      <span class="section-label">Metodologia</span>
+      <h2 class="section-title">Como funciona o Scale Program</h2>
+      <p class="section-sub">Um sistema comprovado em 3 etapas para transformar sua operação de marketing em um negócio escalável.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card fade-up">
+        <div class="step-num">01</div>
+        <div class="step-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E5232A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
+          </svg>
+        </div>
+        <div class="step-title">Formação</div>
+        <div class="step-desc">Acesso ao treinamento mais completo do mercado em marketing digital, construído a partir de mais de 15 anos de resultados reais com clientes.</div>
+      </div>
+      <div class="step-card fade-up">
+        <div class="step-num">02</div>
+        <div class="step-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E5232A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>
+          </svg>
+        </div>
+        <div class="step-title">Aceleração</div>
+        <div class="step-desc">Tecnologia proprietária e suporte operacional completo para escalar seus resultados com eficiência e previsibilidade.</div>
+      </div>
+      <div class="step-card fade-up">
+        <div class="step-num">03</div>
+        <div class="step-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E5232A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <div class="step-title">Treinamento Contínuo</div>
+        <div class="step-desc">Comunidade exclusiva de franqueados, mentorias semanais e updates constantes para você nunca ficar para trás.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ DELIVERABLES GRID -->
+<section class="delivers" id="entregaveis">
+  <div class="container">
+    <div class="section-header center">
+      <span class="section-label">Entregáveis</span>
+      <h2 class="section-title">O que você recebe no Scale Program</h2>
+      <p class="section-sub">Tudo que você precisa para construir e escalar sua operação, sem precisar reinventar a roda.</p>
+    </div>
+    <div class="delivers-grid">
+      <div class="deliver-card fade-up">
+        <div class="deliver-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E5232A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+          </svg>
+        </div>
+        <div class="deliver-title">Metodologia V4</div>
+        <div class="deliver-desc">Framework exclusivo de marketing digital validado com +2.000 clientes em 15 anos.</div>
+      </div>
+      <div class="deliver-card fade-up">
+        <div class="deliver-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E5232A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
+          </svg>
+        </div>
+        <div class="deliver-title">CRM Proprietário</div>
+        <div class="deliver-desc">Software de gestão de clientes desenvolvido pela V4 para operações de marketing.</div>
+      </div>
+      <div class="deliver-card fade-up">
+        <div class="deliver-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E5232A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/>
+          </svg>
+        </div>
+        <div class="deliver-title">Gestão de Tráfego</div>
+        <div class="deliver-desc">Acesso a estratégias e playbooks de mídia paga testados em centenas de nichos.</div>
+      </div>
+      <div class="deliver-card fade-up">
+        <div class="deliver-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E5232A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+        </div>
+        <div class="deliver-title">Suporte Comercial</div>
+        <div class="deliver-desc">Time de especialistas para te ajudar a fechar contratos e escalar sua carteira de clientes.</div>
+      </div>
+      <div class="deliver-card fade-up">
+        <div class="deliver-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E5232A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <div class="deliver-title">Treinamentos Semanais</div>
+        <div class="deliver-desc">Lives e conteúdos exclusivos toda semana com especialistas do mercado digital.</div>
+      </div>
+      <div class="deliver-card fade-up">
+        <div class="deliver-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E5232A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <div class="deliver-title">Comunidade Exclusiva</div>
+        <div class="deliver-desc">Rede de mais de 800 franqueados para networking, parcerias e troca de experiências.</div>
+      </div>
+      <div class="deliver-card fade-up">
+        <div class="deliver-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E5232A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+        </div>
+        <div class="deliver-title">Playbooks Prontos</div>
+        <div class="deliver-desc">Processos documentados para todas as áreas da operação: vendas, entrega, gestão e crescimento.</div>
+      </div>
+      <div class="deliver-card fade-up">
+        <div class="deliver-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E5232A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/>
+          </svg>
+        </div>
+        <div class="deliver-title">Tecnologia de BI</div>
+        <div class="deliver-desc">Dashboard de inteligência de dados para monitorar performance de clientes em tempo real.</div>
+      </div>
+      <div class="deliver-card fade-up">
+        <div class="deliver-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E5232A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <div class="deliver-title">Suporte Jurídico</div>
+        <div class="deliver-desc">Assessoria legal para contratos com clientes, proteção de marca e compliance digital.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ COMPARISON -->
+<section class="comparison">
+  <div class="container">
+    <div class="section-header center">
+      <span class="section-label">Comparativo</span>
+      <h2 class="section-title">Sozinho vs. com a V4</h2>
+      <p class="section-sub" style="color:rgba(255,255,255,0.4)">A diferença entre tentar e realmente escalar.</p>
+    </div>
+    <div class="compare-grid">
+      <div class="compare-col bad">
+        <div class="compare-col-header">Sem a V4</div>
+        <div class="compare-col-body">
+          <div class="compare-row"><span class="cmp-icon">❌</span> Metodologia própria — errando e errando</div>
+          <div class="compare-row"><span class="cmp-icon">❌</span> Sozinho para enfrentar a concorrência</div>
+          <div class="compare-row"><span class="cmp-icon">❌</span> Tecnologia cara e fragmentada</div>
+          <div class="compare-row"><span class="cmp-icon">❌</span> Sem suporte para fechar grandes clientes</div>
+          <div class="compare-row"><span class="cmp-icon">❌</span> Curva de aprendizado longa e cara</div>
+          <div class="compare-row"><span class="cmp-icon">❌</span> Sem rede ou comunidade de apoio</div>
+        </div>
+      </div>
+      <div class="compare-col good">
+        <div class="compare-col-header">✦ Com o Scale Program</div>
+        <div class="compare-col-body">
+          <div class="compare-row"><span class="cmp-icon" style="color:var(--red)">✓</span> Metodologia validada em +2.000 clientes</div>
+          <div class="compare-row"><span class="cmp-icon" style="color:var(--red)">✓</span> Marca reconhecida que abre portas</div>
+          <div class="compare-row"><span class="cmp-icon" style="color:var(--red)">✓</span> Tecnologia proprietária inclusa</div>
+          <div class="compare-row"><span class="cmp-icon" style="color:var(--red)">✓</span> Time comercial treinado ao seu lado</div>
+          <div class="compare-row"><span class="cmp-icon" style="color:var(--red)">✓</span> Treinamento contínuo e atualizado</div>
+          <div class="compare-row"><span class="cmp-icon" style="color:var(--red)">✓</span> Comunidade de +800 franqueados</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ RESULTS -->
+<section class="results" id="resultados">
+  <div class="container">
+    <div class="section-header center">
+      <span class="section-label">Números</span>
+      <h2 class="section-title">Números que provam o método</h2>
+      <p class="section-sub">Mais de uma década de resultados reais. Não prometemos, mostramos.</p>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card fade-up">
+        <div class="stat-value"><em>R$</em>2.4Bi</div>
+        <div class="stat-label">em receita gerada para clientes</div>
+      </div>
+      <div class="stat-card fade-up">
+        <div class="stat-value">847<em>+</em></div>
+        <div class="stat-label">franqueados ativos no Brasil</div>
+      </div>
+      <div class="stat-card fade-up">
+        <div class="stat-value">15<em>+</em></div>
+        <div class="stat-label">anos de história e expertise</div>
+      </div>
+      <div class="stat-card fade-up">
+        <div class="stat-value">9<em>.2</em></div>
+        <div class="stat-label">NPS — satisfação dos franqueados</div>
+      </div>
+    </div>
+    <div class="testimonial-card fade-up">
+      <blockquote class="testimonial-quote">
+        "Antes do Scale Program eu faturava R$18k por mês com muito esforço. Em 8 meses com a metodologia V4 cheguei a R$127k. A estrutura, o suporte e a rede de franqueados mudaram completamente o meu negócio."
+      </blockquote>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">L</div>
+        <div>
+          <div class="testimonial-name">Lucas Mendonça</div>
+          <div class="testimonial-role">Franqueado V4 · São Paulo, SP</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ FAQ -->
+<section class="faq" id="faq">
+  <div class="container">
+    <div class="section-header center">
+      <span class="section-label">Dúvidas</span>
+      <h2 class="section-title">Perguntas frequentes</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Quanto preciso investir para entrar no Scale Program?
+          <span class="faq-chevron"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">O investimento inicial cobre a licença da metodologia, acesso às ferramentas e tecnologia proprietária, além de todo o onboarding. Entre em contato para receber os detalhes do investimento de forma personalizada, conforme o perfil de operação que você quer montar.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Preciso ter experiência anterior em marketing digital?
+          <span class="faq-chevron"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">Não é obrigatório. Nosso programa de Formação foi desenvolvido para atender desde quem está começando até profissionais experientes que querem sistematizar e escalar. O que importa é ter visão empreendedora e disposição para seguir a metodologia.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Em quanto tempo posso esperar resultados?
+          <span class="faq-chevron"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">Os primeiros resultados costumam aparecer entre 30 e 90 dias após o início da operação, com o onboarding completo. A escala significativa — faturamentos acima de R$100k/mês — geralmente ocorre entre 6 e 12 meses, dependendo do comprometimento e do mercado de atuação.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Como funciona o suporte após a entrada no programa?
+          <span class="faq-chevron"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">Você terá acesso ao suporte operacional, comercial e técnico da V4. Há mentorias semanais, canais exclusivos na comunidade de franqueados, além de um gerente de conta dedicado para acompanhar sua evolução e resolver bloqueios no caminho.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Posso operar de qualquer cidade ou estado do Brasil?
+          <span class="faq-chevron"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">Sim. O modelo Scale Program foi desenhado para ser 100% operável de forma remota. Você pode atender clientes locais ou de todo o Brasil, sem necessidade de escritório físico para começar.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Qual é o prazo do contrato de franquia?
+          <span class="faq-chevron"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">O contrato padrão do Scale Program tem vigência de 24 meses, com possibilidade de renovação. Todo o processo de contratação é acompanhado pela nossa assessoria jurídica, garantindo segurança para ambas as partes.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ FINAL CTA -->
+<section class="final-cta" id="inscricao">
+  <div class="container">
+    <div class="section-header center" style="margin-bottom:48px">
+      <span class="section-label">Inscrição</span>
+      <h2 class="section-title">Pronto para escalar com a V4?</h2>
+      <p class="section-sub">Preencha o formulário e um especialista entrará em contato para apresentar o programa com mais detalhes.</p>
+    </div>
+    <form class="cta-form" onsubmit="handleSubmit(event)">
+      <div class="form-row">
+        <label class="form-label">Seu nome</label>
+        <input class="form-input" type="text" placeholder="Como posso te chamar?" required />
+      </div>
+      <div class="form-row">
+        <label class="form-label">WhatsApp</label>
+        <input class="form-input" type="tel" placeholder="(11) 99999-9999" required />
+      </div>
+      <div class="form-row">
+        <label class="form-label">E-mail</label>
+        <input class="form-input" type="email" placeholder="seu@email.com" required />
+      </div>
+      <button type="submit" class="form-submit">Quero entrar no Scale Program →</button>
+      <div class="form-privacy">Seus dados estão protegidos. Não enviamos spam.</div>
+    </form>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">V4</div>
+      <div class="footer-links">
+        <a href="#">Política de Privacidade</a>
+        <a href="#">Termos de Uso</a>
+        <a href="#">Contato</a>
+      </div>
+      <div class="footer-social">
+        <a class="social-btn" href="#" aria-label="Instagram">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.01" fill="currentColor" stroke-width="3"/>
+          </svg>
+        </a>
+        <a class="social-btn" href="#" aria-label="LinkedIn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
+          </svg>
+        </a>
+        <a class="social-btn" href="#" aria-label="YouTube">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.4a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/>
+          </svg>
+        </a>
+      </div>
+      <div class="footer-copy">© 2025 V4 Company. Todos os direitos reservados.</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ─── Navbar scroll behavior ───────────────────────────────────────
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+  });
+
+  // ─── FAQ accordion ────────────────────────────────────────────────
+  function toggleFaq(el) {
+    const item = el.closest('.faq-item');
+    const answer = item.querySelector('.faq-a');
+    const isOpen = item.classList.contains('open');
+    // Close all
+    document.querySelectorAll('.faq-item.open').forEach(i => {
+      i.classList.remove('open');
+      i.querySelector('.faq-a').style.maxHeight = '0';
+    });
+    // Open clicked (if was closed)
+    if (!isOpen) {
+      item.classList.add('open');
+      answer.style.maxHeight = answer.scrollHeight + 'px';
+    }
+  }
+
+  // ─── Scroll fade-in animations ───────────────────────────────────
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // ─── Form submit ─────────────────────────────────────────────────
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('.form-submit');
+    btn.textContent = 'Enviado! Em breve entraremos em contato ✓';
+    btn.style.background = '#1a7a3f';
+    btn.disabled = true;
+  }
+
+  // ─── Hero entrance animation ─────────────────────────────────────
+  window.addEventListener('load', () => {
+    document.querySelector('.hero-content').style.animation = 'heroIn 0.8s ease both';
+  });
+</script>
+
+<style>
+  @keyframes heroIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</body>
+</html>
